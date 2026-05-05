@@ -3,6 +3,10 @@ require('keymaps')
 require('lazyvim')
 require('colourscheme')
 
+--Bufferline
+vim.opt.termguicolors = true
+require("bufferline").setup{}
+
 --Lualine Config
 
 require('lualine').setup {
@@ -18,7 +22,7 @@ require('lualine').setup {
     ignore_focus = {},
     always_divide_middle = true,
     always_show_tabline = true,
-    globalstatus = false,
+    globalstatus = true,
     refresh = {
       statusline = 1000,
       tabline = 1000,
@@ -59,3 +63,40 @@ require('lualine').setup {
   inactive_winbar = {},
   extensions = {}
 }
+
+require("stcursorword").setup({
+    max_word_length = 100, -- if cursorword length > max_word_length then not highlight
+    min_word_length = 2, -- if cursorword length < min_word_length then not highlight
+    excluded = {
+        filetypes = {
+            "TelescopePrompt",
+        },
+        buftypes = {
+            -- "nofile",
+            -- "terminal",
+        },
+        patterns = { -- the pattern to match with the file path
+            -- "%.png$",
+            -- "%.jpg$",
+            -- "%.jpeg$",
+            -- "%.pdf$",
+            -- "%.zip$",
+            -- "%.tar$",
+            -- "%.tar%.gz$",
+            -- "%.tar%.xz$",
+            -- "%.tar%.bz2$",
+            -- "%.rar$",
+            -- "%.7z$",
+            -- "%.mp3$",
+            -- "%.mp4$",
+        },
+    },
+    highlight = {
+        underline = true,
+        fg = nil,
+        bg = nil,
+    },
+})
+
+require("ibl").setup()
+require('Comment').setup()

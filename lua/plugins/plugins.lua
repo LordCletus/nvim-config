@@ -14,6 +14,15 @@ return {
         opts = {}
     },
 
+    --Strikethrough Plugin
+    {
+        "justamanpop/strike-through.nvim"  
+    },
+    {
+        'akinsho/bufferline.nvim', 
+        version = "*", 
+        dependencies = 'nvim-tree/nvim-web-devicons'
+    },
     {
         "saghen/blink.cmp",
         -- optional: provides snippets for the snippet source
@@ -122,10 +131,143 @@ return {
         'nvim-tree/nvim-web-devicons'
     },
 
-    --Feline Bar
+    --Feline statusbar
     
     {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' }
+        'nvim-lualine/lualine.nvim',
+        dependencies = { 'nvim-tree/nvim-web-devicons' }
+    },
+
+    --Barbecue Bar and lines
+
+    {
+        "utilyre/barbecue.nvim",
+        name = "barbecue",
+        version = "*",
+        dependencies = {
+          "SmiteshP/nvim-navic",
+          "nvim-tree/nvim-web-devicons", -- optional dependency
+        },
+        opts = {
+        -- configurations go here
+        },
+    },
+
+    --Rust-anyalyser features
+
+    {
+        'mrcjkb/rustaceanvim',
+        version = '^6', -- Recommended
+        lazy = false, -- This plugin is already lazy
+    },
+
+    --Cursor word underlineing
+
+    {
+        "sontungexpt/stcursorword",
+        event = "VeryLazy",
+        config = true,
+    },
+    
+    --indent-blankline
+
+    {
+        "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} 
+    },
+
+    --Surround
+
+    {
+        "kylechui/nvim-surround",
+        version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
+        event = "VeryLazy",
+        config = function()
+            require("nvim-surround").setup({
+                -- Configuration here, or leave empty to use defaults
+            })
+        end
+    },
+
+    -- Autopairs
+
+    {
+        'windwp/nvim-autopairs',
+        event = "InsertEnter",
+        config = true
+        -- use opts = {} for passing setup options
+        -- this is equivalent to setup({}) function
+    },
+
+    --Diagnostics viewer
+    {
+        "rachartier/tiny-inline-diagnostic.nvim",
+        event = "VeryLazy",
+        priority = 1000,
+        config = function()
+            require('tiny-inline-diagnostic').setup()
+            vim.diagnostic.config({ virtual_text = false }) -- Disable default virtual text
+        end
+    },   
+
+    --Yazi
+    {
+      "mikavilpas/yazi.nvim",
+      version = "*", -- use the latest stable version
+      event = "VeryLazy",
+      dependencies = {
+        { "nvim-lua/plenary.nvim", lazy = true },
+      },
+      keys = {
+        --  in this section, choose your own keymappings!
+        {
+          "<leader>-",
+          mode = { "n", "v" },
+          "<cmd>Yazi<cr>",
+          desc = "Open yazi at the current file",
+        },
+        {
+          -- Open in the current working directory
+          "<leader>cw",
+          "<cmd>Yazi cwd<cr>",
+          desc = "Open the file manager in nvim's working directory",
+        },
+        {
+          "fm",
+          "<cmd>Yazi toggle<cr>",
+          desc = "Resume the last yazi session",
+        },
+      },
+      ---@type YaziConfig | {}
+      opts = {
+        -- if you want to open yazi instead of netrw, see below for more info
+        open_for_directories = false,
+        keymaps = {
+          show_help = "<f1>",
+        },
+      },
+      --  if you use `open_for_directories=true`, this is recommended
+      init = function()
+        -- mark netrw as loaded so it's not loaded at all.
+        --
+        -- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
+        vim.g.loaded_netrwPlugin = 1
+      end,
+    },
+    --comment out 
+    
+    {
+        'numToStr/Comment.nvim',
+        opts = {
+            -- add any options here
+    },
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
+        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+        ---@module 'render-markdown'
+        ---@type render.md.UserConfig
+        opts = {},
     }
+
 }
