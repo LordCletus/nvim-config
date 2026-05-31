@@ -1,5 +1,8 @@
 return {
-    --Color Scheme	
+    --################
+    --# Color Scheme #
+    --################
+
     {
         "rose-pine/neovim",
 	    name = "rose-pine",
@@ -8,13 +11,24 @@ return {
 	    end
     },
 
-    --Mason LSP Helper
+    --####################
+    --# Mason LSP Helper #
+    --####################
+    
     {
         "mason-org/mason.nvim",
         opts = {}
     },
 
-    --Strikethrough Plugin
+    --Lsp config
+    {
+        "neovim/nvim-lspconfig",
+    },
+
+    --########################
+    --# Strikethrough Plugin #
+    --########################
+    
     {
         "justamanpop/strike-through.nvim"  
     },
@@ -23,90 +37,64 @@ return {
         version = "*", 
         dependencies = 'nvim-tree/nvim-web-devicons'
     },
+
+    --####################
+    --# Blink Completion #
+    --####################
+
     {
-        "saghen/blink.cmp",
-        -- optional: provides snippets for the snippet source
-        dependencies = { "rafamadriz/friendly-snippets" },
-
-        -- Use a release tag to download pre-built binaries
-        version = "*",
-        -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
-        -- build = 'cargo build --release',
-        -- If you use nix, you can build from source using the latest nightly rust with:
-        -- build = 'nix run .#build-plugin',
-
-        opts = {
-            -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-            -- 'super-tab' for mappings similar to VSCode (tab to accept)
-            -- 'enter' for enter to accept
-            -- 'none' for no mappings
-            --
-            -- All presets have the following mappings:
-            -- C-space: Open menu or open docs if already open
-            -- C-n/C-p or Up/Down: Select next/previous item
-            -- C-e: Hide menu
-            -- C-k: Toggle signature help (if signature.enabled = true)
-            --
-            -- See :h blink-cmp-config-keymap for defining your own keymap
-            keymap = {
-                -- Each keymap may be a list of commands and/or functions
-                preset = "enter",
-                -- Select completions
-                ["<Up>"] = { "select_prev", "fallback" },
-                ["<Down>"] = { "select_next", "fallback" },
-                ["<Tab>"] = { "select_next", "fallback" },
-                ["<S-Tab>"] = { "select_prev", "fallback" },
-                -- Scroll documentation
-                ["<C-b>"] = { "scroll_documentation_up", "fallback" },
-                ["<C-f>"] = { "scroll_documentation_down", "fallback" },
-                -- Show/hide signature
-                ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
-            },
-
-            appearance = {
-                -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-                -- Adjusts spacing to ensure icons are aligned
-                nerd_font_variant = "mono",
-            },
-
-            sources = {
-                -- `lsp`, `buffer`, `snippets`, `path`, and `omni` are built-in
-                -- so you don't need to define them in `sources.providers`
-                default = { "lsp", "path", "snippets", "buffer" },
-
-                -- Sources are configured via the sources.providers table
-            },
-
-            -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
-            -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
-            -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
-            --
-            -- See the fuzzy documentation for more information
-            fuzzy = { implementation = "prefer_rust_with_warning" },
-            completion = {
-                -- The keyword should only match against the text before
-                keyword = { range = "prefix" },
-                menu = {
-                    -- Use treesitter to highlight the label text for the given list of sources
-                    draw = {
-                        treesitter = { "lsp" },
-                    },
-                },
-                -- Show completions after typing a trigger character, defined by the source
-                trigger = { show_on_trigger_character = true },
-                documentation = {
-                    -- Show documentation automatically
-                    auto_show = true,
-                },
-            },
-
-            -- Signature help when tying
-            signature = { enabled = true },
+      'saghen/blink.cmp',
+      dependencies = {
+        'saghen/blink.lib',
+        -- optional: provides snippets for the snippet source 
+        -- 'rafamadriz/friendly-snippets', 
         },
-        opts_extend = { "sources.default" },
-    },
+      build = function()
+        -- build the fuzzy matcher, wait up to 60 seconds
+        -- you can use `gb` in `:Lazy` to rebuild the plugin as needed
+        require('blink.cmp').build():wait(60000)
+      end,
+
+      ---@module 'blink.cmp'
+      ---@type blink.cmp.Config
+      opts = {
+        -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+        -- 'super-tab' for mappings similar to vscode (tab to accept)
+        -- 'enter' for enter to accept
+        -- 'none' for no mappings
+        --
+        -- All presets have the following mappings:
+        -- C-space: Open menu or open docs if already open
+        -- C-n/C-p or Up/Down: Select next/previous item
+        -- C-e: Hide menu
+        -- C-k: Toggle signature help (if signature.enabled = true)
+        --
+        -- See :h blink-cmp-config-keymap for defining your own keymap
+        keymap = { 
+            preset = 'super-tab', 
+
+            ["<C-Tab>"] = { "show", "fallback"},
+
+        },
+
+        -- (Default) Only show the documentation popup when manually triggered
+        completion = { documentation = { auto_show = false } },
+
+        -- (Default) list of enabled providers defined so that you can extend it
+        -- elsewhere in your config, without redefining it, due to `opts_extend`
+        sources = { default = { 'lsp', 'path', 'snippets', 'buffer' } },
+
+        -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
+        -- You may use a lua implementation instead by using `implementation = "lua"`
+        -- See the fuzzy documentation for more information
+        fuzzy = { implementation = "lua" }
+      },
+      },
  
-    --Treesitter
+
+    --##############
+    --# Treesitter #
+    --##############
 
     {
         'nvim-treesitter/nvim-treesitter',
@@ -115,30 +103,18 @@ return {
         build = ':TSUpdate'
     },
 
-    --NvimTree(File Manager)
-
-    {
-        'nvim-tree/nvim-tree.lua',
-        branch = 'master',
-        opts = {
-
-               }
-    },
-
-    --NvimTree devicons
-    
-    {
-        'nvim-tree/nvim-web-devicons'
-    },
-
-    --Feline statusbar
+    --####################
+    --# Feline statusbar #
+    --####################
     
     {
         'nvim-lualine/lualine.nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' }
     },
 
-    --Barbecue Bar and lines
+    --##########################
+    --# Barbecue Bar and lines #
+    --##########################
 
     {
         "utilyre/barbecue.nvim",
@@ -153,7 +129,9 @@ return {
         },
     },
 
-    --Rust-anyalyser features
+    --###########################
+    --# Rust-anyalyser features #
+    --###########################
 
     {
         'mrcjkb/rustaceanvim',
@@ -161,7 +139,9 @@ return {
         lazy = false, -- This plugin is already lazy
     },
 
-    --Cursor word underlineing
+    --############################
+    --# Cursor word underlineing #
+    --############################
 
     {
         "sontungexpt/stcursorword",
@@ -169,13 +149,17 @@ return {
         config = true,
     },
     
-    --indent-blankline
+    --####################
+    --# indent-blankline #
+    --####################
 
     {
         "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} 
     },
 
-    --Surround
+    --############
+    --# Surround #
+    --############
 
     {
         "kylechui/nvim-surround",
@@ -188,7 +172,9 @@ return {
         end
     },
 
-    -- Autopairs
+    -- #############
+    -- # Autopairs #
+    -- #############
 
     {
         'windwp/nvim-autopairs',
@@ -198,7 +184,10 @@ return {
         -- this is equivalent to setup({}) function
     },
 
-    --Diagnostics viewer
+    --######################
+    --# Diagnostics viewer #
+    --######################
+
     {
         "rachartier/tiny-inline-diagnostic.nvim",
         event = "VeryLazy",
@@ -209,7 +198,10 @@ return {
         end
     },   
 
-    --Yazi
+    --########
+    --# Yazi #
+    --########
+
     {
       "mikavilpas/yazi.nvim",
       version = "*", -- use the latest stable version
@@ -253,21 +245,15 @@ return {
         vim.g.loaded_netrwPlugin = 1
       end,
     },
-    --comment out 
+
+    --###############
+    --# Comment Out #
+    --###############
     
     {
         'numToStr/Comment.nvim',
         opts = {
             -- add any options here
-    },
-    {
-        'MeanderingProgrammer/render-markdown.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-        ---@module 'render-markdown'
-        ---@type render.md.UserConfig
-        opts = {},
     }
 }
 }
