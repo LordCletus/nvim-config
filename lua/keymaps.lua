@@ -11,10 +11,13 @@ local opts = {
 -- Hint: see `:h vim.map.set()`
 
 -- Better window navigation
-vim.keymap.set('n', '<Alt-h>', '<C-w> h', opts)
-vim.keymap.set('n', '<Alt-j>', '<C-w> j', opts)
-vim.keymap.set('n', '<C-k>', '<C-w> k', opts)
-vim.keymap.set('n', '<C-l>', '<C-w> l', opts)
+vim.keymap.set('n', '<C-h>', ':wincmd h<CR>', opts)
+vim.keymap.set('n', '<C-j>', ':wincmd j<CR>', opts)
+vim.keymap.set('n', '<C-k>', ':wincmd k<CR>', opts)
+vim.keymap.set('n', '<C-l>', ':wincmd l<CR>', opts)
+
+-- Bufferline actions
+vim.keymap.set('n', 'bg', ':BufferLinePick<CR>')
 
 --Exit with qq
 vim.keymap.set('n', 'qq', ':q<CR>', opts)

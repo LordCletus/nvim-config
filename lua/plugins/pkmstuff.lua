@@ -11,6 +11,11 @@ return
         -- refer to the configuration section below
         image = { enabled = true },
         keymap = { enabled = true },
+        terminal = { enabled = true },
+        },
+
+        keys = {
+            { "T", function() Snacks.terminal() end, desc = "Toggle Terminal" }
         },
     },
 
